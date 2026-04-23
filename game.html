@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Game Page</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a href="index.html" class="back-home-btn">&#8592; Back</a>
+<div class="game-page">
+  <img id="gameIcon" src="" class="game-icon">
+  <h1 id="gameTitle"></h1>
+  <button id="playBtn">Play Now</button>
+
+  <div class="screenshots" style="display:flex;overflow-x:auto;gap:10px;margin-top:15px;">
+    <img id="s1" src="" alt="s1">
+    <img id="s2" src="" alt="s2">
+    <img id="s3" src="" alt="s3">
+    <img id="s4" src="" alt="s4">
+  </div>
+
+  <div class="game-details">
+    <h3>About This Game</h3>
+    <p id="gameDesc"></p>
+  </div>
+</div>
+
+<footer>
+<p>Created by YourName | Gaming Hub 2025</p>
+</footer>
+
+<script src="cursor.js"></script>
+<script>
+if(localStorage.getItem("theme") !== "light"){
+  document.body.classList.add("dark-mode");
+}
+
+const game = JSON.parse(localStorage.getItem("selectedGame"));
+if(game){
+  document.getElementById("gameTitle").innerText = game.name;
+  document.getElementById("gameDesc").innerText = game.desc;
+  const iconCandidates = (game.iconCandidates && game.iconCandidates.length) ? game.iconCandidates : [game.icon];
+  const gameIconEl = document.getElementById("gameIcon");
+  let iconIndex = 0;
+  gameIconEl.src = iconCandidates[iconIndex];
+  gameIconEl.onerror = ()=>{
+    iconIndex += 1;
+    if(iconIndex < iconCandidates.length){
+      gameIconEl.src = iconCandidates[iconIndex];
+    } else {
+      gameIconEl.onerror = null;
+    }
+  };
+
+  // Screenshot naming pattern: game-s1, game-s2, game-s3, game-s4
+  const iconPath = (iconCandidates[0] || "").split("?")[0];
+  const iconFile = iconPath.split("/").pop() || "";
+  const hasExt = iconFile.includes(".");
+  const baseName = hasExt ? iconFile.substring(0, iconFile.lastIndexOf(".")) : iconFile;
+  const ext = hasExt ? iconFile.substring(iconFile.lastIndexOf(".") + 1) : "jpg";
+
+  for(let i=1;i<=4;i++){
+    const imgEl = document.getElementById("s"+i);
+    imgEl.src = `${baseName}-s${i}.${ext}`;
+    imgEl.onerror = ()=>{
+      imgEl.onerror = null;
+      imgEl.src = iconCandidates[0];
+    };
+    imgEl.alt = `${game.name} preview ${i}`;
+  }
+
+  const playBtn = document.getElementById("playBtn");
+  if(!game.url){
+    playBtn.innerText = "Link Coming Soon";
+    playBtn.disabled = true;
+    playBtn.style.opacity = "0.65";
+    playBtn.style.cursor = "not-allowed";
+  } else {
+    playBtn.onclick = ()=>{
+      window.location.href = "play.html";
+    };
+  }
+}
+</script>
+</body>
+</html>

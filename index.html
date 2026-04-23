@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CRASHGAMING ARENA</title>
+<link rel="stylesheet" href="style.css">
+<!-- Favicon -->
+<link rel="icon" href="icon.png" type="image/png">
+</head>
+<body>
+<div id="startupLoader" class="startup-loader" role="status" aria-live="polite">
+  <div class="startup-loader-inner">
+    <h2 class="startup-loader-name">CRASHGAMING ARENA</h2>
+    <div class="startup-loader-bar">
+      <div class="startup-loader-fill"></div>
+    </div>
+  </div>
+</div>
+<!-- Sidebar -->
+<nav class="sidebar" id="sidebar">
+  <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()" aria-label="Toggle sidebar">&#9776;</button>
+  <a class="nav-link active-nav" data-section="home" onclick="showSection('home')">
+    <span class="icon">&#8962;</span>
+    <span class="label">Home</span>
+  </a>
+  <a class="nav-link" data-section="settings" onclick="showSection('settings')">
+    <span class="icon">&#9881;</span>
+    <span class="label">Settings</span>
+  </a>
+  <a class="nav-link" data-section="search" onclick="showSection('search')">
+    <span class="icon">&#128269;</span>
+    <span class="label">Search</span>
+  </a>
+  <a class="nav-link sidebar-profile-link" data-section="profile" onclick="showSection('profile')">
+    <span class="icon profile-nav-icon" id="profileNavIcon">
+      <span id="profileNavFallback">&#128100;</span>
+      <img id="profileNavImg" alt="Profile Icon">
+    </span>
+    <span class="label">Profile</span>
+  </a>
+</nav>
+
+<!-- Main Content -->
+<div class="main">
+  <div id="homeHeader">
+    <!-- Website Name -->
+    <h1 class="site-title">CRASHGAMING ARENA</h1>
+
+    <!-- Subtitle -->
+    <h2 class="site-subtitle">Play Hard. Crash Harder</h2>
+  </div>
+
+  <!-- Search -->
+  <div id="search" class="search-box hidden">
+    <input type="text" id="searchInput" placeholder="Search games..." onkeyup="filterGames()">
+    <div class="search-categories">
+      <button class="category-folder active" onclick="setSearchCategory('all', this)">All</button>
+      <button class="category-folder" onclick="setSearchCategory('shooting', this)">Shooting</button>
+      <button class="category-folder" onclick="setSearchCategory('driving', this)">Driving</button>
+      <button class="category-folder" onclick="setSearchCategory('multiplayer', this)">Multiplayer</button>
+      <button class="category-folder" onclick="setSearchCategory('singleplayer', this)">Single Player</button>
+    </div>
+    <div id="searchResults" class="search-results"></div>
+  </div>
+
+  <!-- Home -->
+  <div id="home" class="home-section">
+    <section class="top-games-section">
+      <div class="top-games-header">
+        <h3 class="top-games-title">Top 10 Games</h3>
+        <div class="top-games-controls">
+          <button id="topGamesPrevBtn" class="top-games-arrow" type="button" aria-label="Scroll top games left">&#8592;</button>
+          <button id="topGamesNextBtn" class="top-games-arrow" type="button" aria-label="Scroll top games right">&#8594;</button>
+        </div>
+      </div>
+      <div class="top-games-scroll">
+      <div class="top-games-row" id="topGamesRow"></div>
+      </div>
+    </section>
+
+    <div class="games" id="homeGamesGrid"></div>
+  </div>
+
+  <!-- Settings -->
+  <div id="settings" class="settings-box hidden">
+    <h2>Settings</h2>
+    <button id="themeToggleBtn" class="settings-toggle-btn" onclick="toggleTheme()">Dark Theme</button>
+    <button id="fullscreenToggleBtn" class="settings-toggle-btn" onclick="toggleFullscreen()">Full Screen</button>
+  </div>
+
+  <!-- Profile -->
+  <div id="profile" class="profile-box hidden">
+    <h2>Profile</h2>
+    <div class="profile-grid">
+      <div class="profile-main-card">
+        <div class="profile-header">
+          <div class="profile-image-container">
+            <img id="profilePic" src="profile-placeholder.jpg" class="profile-img">
+            <span class="camera-icon" onclick="document.getElementById('uploadPic').click()">&#128247;</span>
+            <input type="file" id="uploadPic" onchange="uploadProfilePic()" style="display:none;">
+          </div>
+          <div>
+            <span class="username-text" id="username">Guest</span>
+            <p id="authStatus" class="auth-status">Not logged in</p>
+          </div>
+        </div>
+
+        <div class="counter-box">
+          <h3 id="hoursPlayed">Hours Played: 0.00h</h3>
+          <div class="progress-bar"><div id="progressFill"></div></div>
+        </div>
+      </div>
+
+      <div class="auth-panel">
+        <h3>Account</h3>
+        <input id="authUsername" type="text" placeholder="Username">
+        <input id="authPassword" type="password" placeholder="Password">
+        <div class="auth-buttons">
+          <button onclick="signup()">Sign Up</button>
+          <button onclick="login()">Login</button>
+        </div>
+        <button class="logout-btn" onclick="logout()">Log Out</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer>
+  <p>Created by ARFAZ | CRASHGAMING ARENA 2025</p>
+</footer>
+
+<script src="script.js"></script>
+<script src="cursor.js"></script>
+</body>
+</html>
