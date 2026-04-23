@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Play Game</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="play-page">
+  <div id="playerTitle" class="player-title"></div>
+  <button id="backBtn" class="player-control player-back">&#8592; Back</button>
+  <button id="fullscreenBtn" class="player-control player-fullscreen">Full Screen</button>
+  <button id="menuBtn" class="player-control player-menu-btn">&#8942;</button>
+  <div id="playerDropdown" class="player-dropdown">
+    <button id="openTabBtn">Open in New Tab</button>
+  </div>
+  <button id="controlsHandle" class="player-handle">&#9660;</button>
+
+  <iframe id="gameFrame" class="game-embed" allowfullscreen></iframe>
+
+<script src="cursor.js"></script>
+<script>
+if(localStorage.getItem("theme") !== "light"){
+  document.body.classList.add("dark-mode");
+}
+
+const game = JSON.parse(localStorage.getItem("selectedGame") || "null");
+if(!game || !game.url){
+  window.location.href = "game.html";
+}
+const activeUser = localStorage.getItem("currentUser");
+
+const page = document.body;
+const frame = document.getElementById("gameFrame");
+const titleEl = document.getElementById("playerTitle");
+const backBtn = document.getElementById("backBtn");
+const fullscreenBtn = document.getElementById("fullscreenBtn");
+const menuBtn = document.getElementById("menuBtn");
+const dropdown = document.getElementById("playerDropdown");
+const openTabBtn = document.getElementById("openTabBtn");
+const handle = document.getElementById("controlsHandle");
+
+titleEl.textContent = game.name;
+frame.src = game.url;
+
+let sessionStartMs = Date.now();
+function flushPlaytime(){
+  if(!activeUser) return;
+  const elapsedSeconds = Math.floor((Date.now() - sessionStartMs) / 1000);
+  if(elapsedSeconds <= 0) return;
+
+  const users = JSON.parse(localStorage.getItem("users") || "{}");
+  if(!users[activeUser]) return;
+  users[activeUser].playSeconds = (users[activeUser].playSeconds || 0) + elapsedSeconds;
+  localStorage.setItem("users", JSON.stringify(users));
+  sessionStartMs = Date.now();
+}
+
+backBtn.addEventListener("click", ()=>{
+  flushPlaytime();
+  window.location.href = "game.html";
+});
+
+fullscreenBtn.addEventListener("click", ()=>{
+  if(!document.fullscreenElement){
+    frame.requestFullscreen();
+  } else {
+    document.exitFullscreen();
+  }
+  showControls();
+});
+
+menuBtn.addEventListener("click", ()=>{
+  dropdown.classList.toggle("show");
+  showControls();
+});
+
+openTabBtn.addEventListener("click", ()=>{
+  flushPlaytime();
+  window.open(game.url, "_blank");
+  dropdown.classList.remove("show");
+  showControls();
+});
+
+handle.addEventListener("click", ()=>{
+  showControls();
+});
+
+document.addEventListener("click", (e)=>{
+  if(!dropdown.contains(e.target) && e.target !== menuBtn){
+    dropdown.classList.remove("show");
+  }
+});
+
+let hideTimer;
+function showControls(){
+  page.classList.remove("controls-hidden");
+  clearTimeout(hideTimer);
+  hideTimer = setTimeout(()=>{
+    page.classList.add("controls-hidden");
+    dropdown.classList.remove("show");
+  }, 8000);
+}
+
+showControls();
+setInterval(flushPlaytime, 30000);
+window.addEventListener("beforeunload", flushPlaytime);
+window.addEventListener("pagehide", flushPlaytime);
+document.addEventListener("visibilitychange", ()=>{
+  if(document.hidden) flushPlaytime();
+});
+</script>
+</body>
+</html>
